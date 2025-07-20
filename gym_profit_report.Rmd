@@ -1,0 +1,97 @@
+---
+title: "Gym Profit"
+author: "Cameron Cheatham"
+date: "2025-07-20"
+output:
+  pdf_document: default
+  html_document: default
+---
+## Gym Profit Report
+
+This report analyzes the gym's profit over six months based on membership growth and pricing strategy.
+
+```{r setup, echo=FALSE, warning=FALSE, message=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+# Load necessary library
+library(tidyverse)
+
+# Define months
+months <- c("July", "August", "September", "October", "November", "December")
+
+# Membership numbers
+standard_members <- c(34, 39, 45, 90, 180, 360)
+premium_members <- c(33, 67, 133, 266, 532, 1064)
+
+# Pricing and costs
+standard_price <- 20
+premium_price <- 60
+variable_cost_per_member <- 6
+fixed_costs <- 6586
+
+# Calculate totals and profit
+total_members <- standard_members + premium_members
+total_revenue <- (standard_members * standard_price) + (premium_members * premium_price)
+variable_costs <- total_members * variable_cost_per_member
+total_costs <- variable_costs + fixed_costs
+profit <- total_revenue - total_costs
+
+# Create data frame with factors to keep order
+gym_data <- data.frame(
+  Month = factor(months, levels = months),
+  Standard_Members = standard_members,
+  Premium_Members = premium_members,
+  Total_Members = total_members,
+  Total_Revenue = total_revenue,
+  Variable_Costs = variable_costs,
+  Fixed_Costs = fixed_costs,
+  Total_Costs = total_costs,
+  Profit = profit
+)
+
+# Print the data frame
+print(gym_data)
+```
+
+## Profit Over Time
+The chart below visualizes the gym's profit over the six months. The red dashed line shows the break-even point at zero profit.
+
+```{r profit-chart, echo=FALSE, warning=FALSE, message=FALSE}
+library(ggplot2)
+
+ggplot(gym_data, aes(x = Month, y = Profit, group = 1)) +
+  geom_line(color = "blue", size = 1.2) +
+  geom_point(size = 3) +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "red") +
+  labs(title = "Gym Profit Over Time",
+       x = "Month",
+       y = "Profit ($)") +
+  theme_minimal()
+```
+
+## Members vs Profit
+This chart shows the relationship between total members and profit over time.
+
+```{r gym-chart, echo=FALSE, warning=FALSE, message=FALSE} 
+ggplot(gym_data, aes(x = Month, y = Profit, group = 1)) +
+  geom_line(color = "darkgreen", size = 1.2) +              # Profit line
+  geom_point(size = 3) +                               # Profit points
+  geom_smooth(method = "lm", se = FALSE, color = "blue", linetype = "dashed") +  # Trend line
+  geom_text(aes(label = Total_Members),                # Add total members as text labels
+            vjust = -1.2, size = 3.2, color = "black") +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "red") +
+  labs(title = "Gym Profit Over Time with Total Members",
+       y = "Profit ($)",
+       x = "Month") +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(size = 12),
+    axis.title = element_text(size = 10),
+    axis.text = element_text(size = 8)
+  )
+```
+
+## Key Insights
+- The gym starts generating profit in **September**.
+- Membership must grow by **20% each month** to achieve this.
+- By **December**, profit reaches over **$55,000** if the trend continues.
+- A mix of **Standard** and **Premium** members improves revenue.
