@@ -1,10 +1,10 @@
 # 🏋️‍♂️ Gym Profit Forecasting Project
 
-This project analyzes the monthly financial performance of a fictional gym using R and Google Sheets. It includes:
+This project analyzes the financial performance of a fictional gym using R and Google Sheets. It includes:
 
 - 📊 Forecasted profits based on monthly membership growth
 - 🔍 Break-even analysis
-- 🎯 Target: $2,000 profit by August
+- 🎯 Target: $2,000 profit by August with a 150,000 expansion by year 3
 - 📈 Visualizations with `ggplot2`
 - 📝 PDF report created using `R Markdown`
 
