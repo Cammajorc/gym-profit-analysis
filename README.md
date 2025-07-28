@@ -1,4 +1,4 @@
-# 🏋️‍♂️ Gym Profit Forecasting Project
+# 🏋️‍♂️ Gym Profit and Expansion Project
 
 This project analyzes the financial performance of a fictional gym using R and Google Sheets. It includes:
 
