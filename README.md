@@ -29,7 +29,7 @@ With a 20% monthly increase in members, the gym breaks even in August with 178 m
 
 ## 🚀 How to Recreate
 1. Clone the repo
-2. Open `Gym_Profit_Report.Rmd` in RStudio
+2. Open any Rmd file in RStudio
 3. Knit to PDF (you may need to install `tinytex`)
 
 ---
