@@ -1,0 +1,167 @@
+---
+title: "Gym Expansion Feasibility Study – Phase 2"
+author: "Cameron Cheatham"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+# Load necessary packages
+library(tidyverse)
+library(ggplot2)
+library(scales)
+library(formattable)
+library(tidyr)
+```
+
+#key financial variables:
+- expansion_cost: Total estimated cost to expand the gym.
+- expenses: Current annual expenses.
+- revenue: Current annual revenue.
+- growth_rate: Expected annual growth rate for profit.
+- net_profit: Profit calculated as revenue minus expenses.
+
+
+```{r echo=FALSE}
+
+expansion_cost <- 150000
+expenses <- 96900
+revenue <- 140000
+growth_rate <- 0.25
+net_profit <- revenue - expenses
+```
+
+# This section calculates:
+- The required annual profit to cover the expansion cost over 3 years.
+- The compound annual growth rate (CAGR) needed to meet expansion costs based on current profits.
+- The projected revenue after 3 years, assuming growth at CAGR.
+
+```{r echo=FALSE, results='asis'}
+required_annual_profit <- expansion_cost / 3
+cagr <- (expansion_cost / net_profit)^(1/3) - 1
+projected_revenue <- revenue * (1 + cagr)^3
+
+cat("**Required Annual Profit:**", dollar(required_annual_profit), "\n")
+cat("**Compound Annual Growth Rate (CAGR):**", round(cagr * 100, 2), "%\n")
+cat("**Projected Revenue in 3 Years (at CAGR):**", dollar(round(projected_revenue, 2)), "\n")
+```
+
+## 3-Year Financial Forecast
+This forecast projects revenue, expenses, and net profit over the next 3 years based on:
+- Price increase of 10% in Year 1.
+- Membership growth of 15% in Year 2.
+- Expense growth and cost savings in Years 2 and 3.
+
+```{r echo=FALSE}
+forecast_years <- c("Y1", "Y2", "Y3")
+
+forecast_revenue <- c(
+  revenue * 1.10,                    # Y1: +10% price
+  revenue * 1.10 * 1.15,             # Y2: +15% members
+  revenue * 1.10 * 1.15              # Y3: same as Y2
+)
+
+forecast_expenses <- c(
+  expenses,                          # Y1: same expenses
+  expenses * 1.10,                   # Y2: +10% growth costs
+  expenses * 1.10 * 0.95             # Y3: -5% cost savings
+)
+
+forecast_net_profit <- forecast_revenue - forecast_expenses
+
+forecast_notes <- c(
+  "Raise prices by 10%",
+  "Add 15% more members",
+  "Cut costs by 5%"
+)
+
+forecast_df <- data.frame(
+  Year = forecast_years,
+  Revenue = round(forecast_revenue, 2),
+  Expenses = round(forecast_expenses, 2),
+  Net_Profit = round(forecast_net_profit, 2),
+  Notes = forecast_notes
+)
+
+knitr::kable(forecast_df, caption = "3-Year Financial Forecast")
+```
+```{r echo=FALSE}
+ggplot(forecast_df, aes(x = Year, y = Net_Profit, group = 1)) +
+  geom_line(color = "steelblue", linewidth = 1.2) +
+  geom_point(color = "darkred", size = 3) +
+  geom_hline(yintercept = expansion_cost, linetype = "dashed", color = "gray40") +
+  labs(
+    title = "3-Year Forecast: Net Profit vs. Expansion Cost",
+    y = "Net Profit ($)",
+    x = "Year"
+  ) +
+  theme_minimal()
+```
+
+### 3-Year Financial Forecast
+This 3-year forecast projects revenue, expenses, and net profit based on realistic assumptions such as price increases, membership growth, and cost savings.
+```{r echo=FALSE, fig.align='center', fig.width=6, fig.height=3}
+forecast_long <- forecast_df %>%
+  pivot_longer(cols = c("Revenue", "Expenses", "Net_Profit"),
+               names_to = "Metric", values_to = "Amount")
+
+ggplot(forecast_long, aes(x = Year, y = Amount, fill = Metric)) +
+  geom_col(position = "dodge", width = 0.5) +
+  labs(
+    title = "3-Year Financial Forecast: Revenue, Expenses, and Net Profit",
+    y = "Amount ($)",
+    x = "Year",
+    fill = "Metric"
+  ) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 7.5))
+```
+
+**However, the 3-year net profit projections indicate it is unlikely to fully cover the gym expansion cost within this timeframe.** This suggests that a longer period is needed to recoup the investment.
+```{r echo=FALSE}
+growth_rate <- 0.25
+years <- 0:6
+
+profit_projection <- net_profit * (1 + growth_rate)^years
+
+profit_df <- data.frame(
+  Year = years,
+  Projected_Profit = round(profit_projection, 2)
+)
+
+knitr::kable(profit_df, caption = "7-Year Profit Projection at 25% Growth")
+```
+
+# 7-Year Profit Projection at 25% Growth
+Given the 3-year forecast is insufficient to cover expansion costs, we extend the projection to 7 years assuming a steady 25% annual growth in profits.
+
+This longer-term projection helps evaluate if the expansion becomes financially feasible over a more realistic timeline.
+```{r echo=FALSE}
+ggplot(profit_df, aes(x = Year, y = Projected_Profit)) +
+  geom_line(color = "darkgreen", linewidth = 1.2) +
+  geom_point(aes(color = Year < 6), size = 3) +
+  scale_color_manual(values = c("TRUE" = "red", "FALSE" = "darkgreen")) +
+  labs(
+    title = "Projected Profit Growth at 25% Annual Rate",
+    x = "Year",
+    y = "Projected Profit ($)"
+  ) +
+  theme_minimal() +
+  theme(legend.position = "none")
+```
+
+# Summary and Conclusion
+
+In this feasibility study, we evaluated the financial outlook for expanding the gym.
+
+- The **3-year forecast** showed that while revenue and profit grow, it is unlikely the expansion cost will be fully covered within this short timeframe.
+- Extending the projection to **7 years**, assuming a consistent 25% annual growth rate, indicates the investment becomes achievable with sustained growth.
+- This suggests the expansion is a **long-term commitment**, requiring strategic planning to maintain growth and manage costs.
+- Moving forward, focusing on **increasing membership, optimizing pricing, and controlling expenses** will be critical to achieving these financial goals.
+
+Overall, while immediate payback within 3 years is not feasible, the 7-year projection provides a promising outlook for successful expansion.
+
+
